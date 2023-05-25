@@ -1,62 +1,38 @@
-<script setup lang="ts">
-import { ref, toRefs } from 'vue'
-
-// set props
-
-interface Props {
-  msg: string
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  msg: '',
-})
-
-const { msg } = toRefs(props)
-
-// set data
-
-const count = ref(0)
-</script>
-
 <template>
-  <h1>{{ msg }}</h1>
-
-  <p>
-    Recommended IDE setup:
-    <a href="https://code.visualstudio.com/" target="_blank">VSCode</a>
-    +
-    <a href="https://github.com/johnsoncodehk/volar" target="_blank">Volar</a>
-  </p>
-
-  <p>See <code>README.md</code> for more information.</p>
-
-  <p>
-    <a href="https://vitejs.dev/guide/features.html" target="_blank"> Vite Docs </a>
-    |
-    <a href="https://v3.vuejs.org/" target="_blank">Vue 3 Docs</a>
-  </p>
-
-  <button type="button" @click="count++">local count is: {{ count }}</button>
-  <p>
-    Edit
-    <code>components/HelloWorld.vue</code> to test hot module replacement.
-  </p>
+  <div id="map" ref="mapContainer" class="map"></div>
 </template>
 
-<style scoped lang="scss">
-a {
-  color: #42b983;
-}
+<script setup lang="ts">
+import mapboxgl from 'mapbox-gl'
+import { onMounted, ref } from 'vue'
+import 'mapbox-gl/dist/mapbox-gl.css'
 
-label {
-  margin: 0 0.5em;
-  font-weight: bold;
-}
+const mapContainer = ref<HTMLElement>()
 
-code {
-  background-color: #eee;
-  padding: 2px 4px;
-  border-radius: 4px;
-  color: #304455;
+mapboxgl.accessToken =
+  'pk.eyJ1IjoiaW5zcGVjdG9ydmliZSIsImEiOiJja3RteGJ4ZDcwdjBsMnVtamkyNTJqbHE5In0.fTHYN9fHbfwL529POn_blw'
+
+onMounted(() => {
+  const map = new mapboxgl.Map({
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    container: mapContainer.value!,
+    // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: [0, 0],
+    zoom: 2,
+    projection: 'globe',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any)
+
+  map.on('style.load', () => {
+    map.setFog({})
+  })
+})
+</script>
+
+<style scoped>
+.map {
+  width: 100vw;
+  height: 100vh;
 }
 </style>
